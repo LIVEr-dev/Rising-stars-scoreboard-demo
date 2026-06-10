@@ -1,40 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Rising Stars Live - Tournament Viewer</title>
-  <link rel="stylesheet" href="css/style.css">
+
+  <!-- FIXED CSS PATH -->
+  <link rel="stylesheet" href="./style.css" />
 </head>
+
 <body>
   <header class="header">
     <div class="container header-content">
       <div>
         <div class="header-title">🏆 Rising Stars Live</div>
-        <div class="header-subtitle">Real-time Tournament Broadcast</div>
+        <div class="header-subtitle">
+          Real-time Tournament Broadcast
+        </div>
       </div>
+
       <button class="btn btn-primary" onclick="goToAdmin()">
         🔓 Open Admin Console
       </button>
     </div>
   </header>
 
-  <main class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
+  <main
+    class="container"
+    style="padding-top: 2rem; padding-bottom: 3rem;"
+  >
     <div id="viewer"></div>
   </main>
 
-  <footer style="border-top: 1px solid rgba(148, 163, 184, 0.1); padding: 2rem 0; text-align: center; color: #94a3b8;">
-    <p>Rising Stars Live © 2026 • Real-time Tournament Management</p>
+  <footer
+    style="
+      border-top: 1px solid rgba(148, 163, 184, 0.1);
+      padding: 2rem 0;
+      text-align: center;
+      color: #94a3b8;
+    "
+  >
+    <p>
+      Rising Stars Live © 2026 • Real-time Tournament Management
+    </p>
   </footer>
 
-  <script src="js/sync.js"></script>
-  <script src="js/timer.js"></script>
+  <!-- FIXED JS PATHS -->
+  <script src="./sync.js"></script>
+  <script src="./timer.js"></script>
+
   <script>
-    const viewerElement = document.getElementById('viewer');
+    const viewerElement = document.getElementById("viewer");
     let unsubscribe = null;
 
     function goToAdmin() {
-      window.open('admin.html', 'admin', 'width=1200,height=800');
+      window.open(
+        "admin.html",
+        "admin",
+        "width=1200,height=800"
+      );
     }
 
     function renderViewer(data) {
@@ -42,72 +67,188 @@
         viewerElement.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">📡</div>
+
             <h2>Waiting for Live Match...</h2>
-            <p>Admin will start broadcasting from the control panel.</p>
-            <p style="font-size: 0.875rem; margin-top: 1rem;">Keep this page open and open Admin Console to start.</p>
+
+            <p>
+              Admin will start broadcasting from the control panel.
+            </p>
+
+            <p
+              style="
+                font-size: 0.875rem;
+                margin-top: 1rem;
+              "
+            >
+              Keep this page open and open Admin Console to start.
+            </p>
           </div>
         `;
         return;
       }
 
       const currentTournament = data.tournaments[0];
+
       if (!currentTournament) return;
 
       let html = `
-        <div style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem;">
-          <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${currentTournament.name}</h2>
-          <p style="color: #94a3b8; font-size: 0.875rem;">${currentTournament.sport} • ${currentTournament.teams.length} Teams</p>
+        <div
+          style="
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+          "
+        >
+          <h2
+            style="
+              font-size: 1.5rem;
+              margin-bottom: 0.5rem;
+            "
+          >
+            ${currentTournament.name}
+          </h2>
+
+          <p
+            style="
+              color: #94a3b8;
+              font-size: 0.875rem;
+            "
+          >
+            ${currentTournament.sport}
+            •
+            ${currentTournament.teams.length} Teams
+          </p>
         </div>
       `;
 
-      // Timer display
+      // TIMER
       if (data.timer) {
         const timer = data.timer;
+
         html += `
           <div class="timer-container">
-            <div class="timer-period">${timer.periodLabel || 'Match Setup'}</div>
-            <div class="timer-display">${timer.formattedTime || '00:00'}</div>
+            <div class="timer-period">
+              ${timer.periodLabel || "Match Setup"}
+            </div>
+
+            <div class="timer-display">
+              ${timer.formattedTime || "00:00"}
+            </div>
+
             <div class="timer-status">
-              ${timer.isPaused ? 'PAUSED' : timer.isRunning ? 'RUNNING' : 'READY'}
+              ${
+                timer.isPaused
+                  ? "PAUSED"
+                  : timer.isRunning
+                  ? "RUNNING"
+                  : "READY"
+              }
             </div>
           </div>
         `;
       }
 
-      // Live matches
-      const liveMatches = (currentTournament.matches || []).filter(m => m.status === 'live');
+      // LIVE MATCHES
+      const liveMatches =
+        (currentTournament.matches || []).filter(
+          (m) => m.status === "live"
+        );
+
       if (liveMatches.length > 0) {
-        html += '<h3 style="color: #ef4444; font-size: 1.25rem; margin-bottom: 1rem;">🔴 LIVE NOW</h3>';
-        html += '<div style="display: grid; gap: 1.5rem;">';
-        liveMatches.forEach(match => {
-          html += renderMatchCard(match, currentTournament, true);
+        html += `
+          <h3
+            style="
+              color: #ef4444;
+              font-size: 1.25rem;
+              margin-bottom: 1rem;
+            "
+          >
+            🔴 LIVE NOW
+          </h3>
+
+          <div style="display: grid; gap: 1.5rem;">
+        `;
+
+        liveMatches.forEach((match) => {
+          html += renderMatchCard(
+            match,
+            currentTournament,
+            true
+          );
         });
-        html += '</div>';
+
+        html += `</div>`;
       }
 
-      // Scheduled matches
-      const scheduledMatches = (currentTournament.matches || []).filter(m => m.status === 'scheduled');
+      // SCHEDULED MATCHES
+      const scheduledMatches =
+        (currentTournament.matches || []).filter(
+          (m) => m.status === "scheduled"
+        );
+
       if (scheduledMatches.length > 0) {
-        html += '<h3 style="color: #f1f5f9; font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem;">📅 Upcoming Matches</h3>';
-        html += '<div style="display: grid; gap: 1.5rem;">';
-        scheduledMatches.forEach(match => {
-          html += renderMatchCard(match, currentTournament, false);
+        html += `
+          <h3
+            style="
+              color: #f1f5f9;
+              font-size: 1.25rem;
+              margin-top: 2rem;
+              margin-bottom: 1rem;
+            "
+          >
+            📅 Upcoming Matches
+          </h3>
+
+          <div style="display: grid; gap: 1.5rem;">
+        `;
+
+        scheduledMatches.forEach((match) => {
+          html += renderMatchCard(
+            match,
+            currentTournament,
+            false
+          );
         });
-        html += '</div>';
+
+        html += `</div>`;
       }
 
-      // Completed matches
-      const completedMatches = (currentTournament.matches || []).filter(m => m.status === 'completed');
+      // COMPLETED MATCHES
+      const completedMatches =
+        (currentTournament.matches || []).filter(
+          (m) => m.status === "completed"
+        );
+
       if (completedMatches.length > 0) {
-        html += '<h3 style="color: #f1f5f9; font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem;">✓ Results</h3>';
-        html += '<div style="display: grid; gap: 1.5rem;">';
-        completedMatches.forEach(match => {
-          html += renderMatchCard(match, currentTournament, false);
+        html += `
+          <h3
+            style="
+              color: #f1f5f9;
+              font-size: 1.25rem;
+              margin-top: 2rem;
+              margin-bottom: 1rem;
+            "
+          >
+            ✓ Results
+          </h3>
+
+          <div style="display: grid; gap: 1.5rem;">
+        `;
+
+        completedMatches.forEach((match) => {
+          html += renderMatchCard(
+            match,
+            currentTournament,
+            false
+          );
         });
-        html += '</div>';
+
+        html += `</div>`;
       }
 
-      // Standings
+      // STANDINGS
       if (completedMatches.length > 0) {
         html += renderStandings(currentTournament);
       }
@@ -115,47 +256,90 @@
       viewerElement.innerHTML = html;
     }
 
-    function renderMatchCard(match, tournament, isLive) {
-      const home = tournament.teams.find(t => t.id === match.homeTeamId);
-      const away = tournament.teams.find(t => t.id === match.awayTeamId);
+    function renderMatchCard(
+      match,
+      tournament,
+      isLive
+    ) {
+      const home = tournament.teams.find(
+        (t) => t.id === match.homeTeamId
+      );
 
-      if (!home || !away) return '';
+      const away = tournament.teams.find(
+        (t) => t.id === match.awayTeamId
+      );
 
-      let status = '';
+      if (!home || !away) return "";
+
+      let status = "";
+
       if (isLive) {
-        status = '<span class="badge badge-red">🔴 LIVE</span>';
-      } else if (match.status === 'completed') {
-        status = '<span class="badge badge-green">✓ Final</span>';
+        status =
+          '<span class="badge badge-red">🔴 LIVE</span>';
+      } else if (match.status === "completed") {
+        status =
+          '<span class="badge badge-green">✓ Final</span>';
       } else {
-        status = '<span class="badge badge-gray">📅 Scheduled</span>';
+        status =
+          '<span class="badge badge-gray">📅 Scheduled</span>';
       }
 
       return `
-        <div class="match-card ${isLive ? 'live' : ''}">
+        <div class="match-card ${isLive ? "live" : ""}">
           <div class="match-header">
-            <span style="font-size: 0.875rem; color: #94a3b8;">${new Date(match.date).toLocaleDateString()}</span>
+            <span
+              style="
+                font-size: 0.875rem;
+                color: #94a3b8;
+              "
+            >
+              ${new Date(match.date).toLocaleDateString()}
+            </span>
+
             ${status}
           </div>
 
           <div class="team-container">
-            <div class="team-badge home">${home.name.charAt(0)}</div>
-            <div class="team-info">
-              <div class="team-name">${home.name}</div>
-              <div class="team-label">HOME</div>
+            <div class="team-badge home">
+              ${home.name.charAt(0)}
             </div>
+
+            <div class="team-info">
+              <div class="team-name">
+                ${home.name}
+              </div>
+
+              <div class="team-label">
+                HOME
+              </div>
+            </div>
+
             <div class="score-display">
-              <div class="score-large">${match.homeScore}</div>
+              <div class="score-large">
+                ${match.homeScore}
+              </div>
             </div>
           </div>
 
           <div class="team-container">
-            <div class="team-badge away">${away.name.charAt(0)}</div>
-            <div class="team-info">
-              <div class="team-name">${away.name}</div>
-              <div class="team-label">AWAY</div>
+            <div class="team-badge away">
+              ${away.name.charAt(0)}
             </div>
+
+            <div class="team-info">
+              <div class="team-name">
+                ${away.name}
+              </div>
+
+              <div class="team-label">
+                AWAY
+              </div>
+            </div>
+
             <div class="score-display">
-              <div class="score-large">${match.awayScore}</div>
+              <div class="score-large">
+                ${match.awayScore}
+              </div>
             </div>
           </div>
         </div>
@@ -163,12 +347,22 @@
     }
 
     function renderStandings(tournament) {
-      const standings = calculateStandings(tournament);
-      if (standings.length === 0) return '';
+      const standings =
+        calculateStandings(tournament);
+
+      if (standings.length === 0) return "";
 
       let html = `
         <div class="card" style="margin-top: 2rem;">
-          <h3 style="font-size: 1.25rem; margin-bottom: 1rem;">Standings</h3>
+          <h3
+            style="
+              font-size: 1.25rem;
+              margin-bottom: 1rem;
+            "
+          >
+            Standings
+          </h3>
+
           <table class="standings-table">
             <thead>
               <tr>
@@ -182,26 +376,69 @@
                 <th style="text-align: right;">Pts</th>
               </tr>
             </thead>
+
             <tbody>
       `;
 
       standings.forEach((s, i) => {
-        let medal = '';
-        if (i === 0) medal = '🥇';
-        else if (i === 1) medal = '🥈';
-        else if (i === 2) medal = '🥉';
-        else medal = (i + 1);
+        let medal = "";
+
+        if (i === 0) medal = "🥇";
+        else if (i === 1) medal = "🥈";
+        else if (i === 2) medal = "🥉";
+        else medal = i + 1;
 
         html += `
           <tr>
             <td class="rank">${medal}</td>
-            <td class="team-name-col">${s.teamName}</td>
-            <td style="text-align: center;">${s.played}</td>
-            <td style="text-align: center; color: #86efac;">${s.wins}</td>
-            <td style="text-align: center; color: #fbbf24;">${s.draws}</td>
-            <td style="text-align: center; color: #fca5a5;">${s.losses}</td>
-            <td style="text-align: center; color: #67e8f9;">${s.gf - s.ga}</td>
-            <td style="text-align: right;"><strong>${s.points}</strong></td>
+
+            <td class="team-name-col">
+              ${s.teamName}
+            </td>
+
+            <td style="text-align: center;">
+              ${s.played}
+            </td>
+
+            <td
+              style="
+                text-align: center;
+                color: #86efac;
+              "
+            >
+              ${s.wins}
+            </td>
+
+            <td
+              style="
+                text-align: center;
+                color: #fbbf24;
+              "
+            >
+              ${s.draws}
+            </td>
+
+            <td
+              style="
+                text-align: center;
+                color: #fca5a5;
+              "
+            >
+              ${s.losses}
+            </td>
+
+            <td
+              style="
+                text-align: center;
+                color: #67e8f9;
+              "
+            >
+              ${s.gf - s.ga}
+            </td>
+
+            <td style="text-align: right;">
+              <strong>${s.points}</strong>
+            </td>
           </tr>
         `;
       });
@@ -217,7 +454,8 @@
 
     function calculateStandings(tournament) {
       const map = {};
-      tournament.teams.forEach(team => {
+
+      tournament.teams.forEach((team) => {
         map[team.id] = {
           teamId: team.id,
           teamName: team.name,
@@ -227,36 +465,61 @@
           losses: 0,
           points: 0,
           gf: 0,
-          ga: 0
+          ga: 0,
         };
       });
 
-      (tournament.matches || []).filter(m => m.status === 'completed').forEach(match => {
-        const h = map[match.homeTeamId];
-        const a = map[match.awayTeamId];
-        if (h && a) {
-          h.played++; a.played++;
-          h.gf += match.homeScore; h.ga += match.awayScore;
-          a.gf += match.awayScore; a.ga += match.homeScore;
+      (tournament.matches || [])
+        .filter((m) => m.status === "completed")
+        .forEach((match) => {
+          const h = map[match.homeTeamId];
+          const a = map[match.awayTeamId];
 
-          if (match.homeScore > match.awayScore) {
-            h.wins++; h.points += 3; a.losses++;
-          } else if (match.homeScore < match.awayScore) {
-            a.wins++; a.points += 3; h.losses++;
-          } else {
-            h.draws++; a.draws++; h.points++; a.points++;
+          if (h && a) {
+            h.played++;
+            a.played++;
+
+            h.gf += match.homeScore;
+            h.ga += match.awayScore;
+
+            a.gf += match.awayScore;
+            a.ga += match.homeScore;
+
+            if (
+              match.homeScore > match.awayScore
+            ) {
+              h.wins++;
+              h.points += 3;
+              a.losses++;
+            } else if (
+              match.homeScore < match.awayScore
+            ) {
+              a.wins++;
+              a.points += 3;
+              h.losses++;
+            } else {
+              h.draws++;
+              a.draws++;
+
+              h.points++;
+              a.points++;
+            }
           }
-        }
-      });
+        });
 
-      return Object.values(map).sort((a, b) => b.points - a.points || (b.gf - b.ga) - (a.gf - a.ga));
+      return Object.values(map).sort(
+        (a, b) =>
+          b.points - a.points ||
+          (b.gf - b.ga) - (a.gf - a.ga)
+      );
     }
 
-    // Initial render
+    // INITIAL RENDER
     renderViewer(dataSync.getData());
 
-    // Subscribe to updates
-    unsubscribe = dataSync.subscribe(renderViewer);
+    // SUBSCRIBE TO UPDATES
+    unsubscribe =
+      dataSync.subscribe(renderViewer);
   </script>
 </body>
 </html>
